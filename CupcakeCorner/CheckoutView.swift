@@ -27,7 +27,7 @@ struct CheckoutView: View {
                 
                 
                 
-                Text("Your total is: \(order.cost, format: .currency(code: "USD"))")
+                Text("Your total is: \(order.oneOrder.cost, format: .currency(code: "USD"))")
                     .font(.title)
                 Button("Place order") {
                     Task {
@@ -54,14 +54,14 @@ struct CheckoutView: View {
         
         let url = URL(string: "https://reqres.in/api/cupcakes")!
         var request = URLRequest(url: url)
-//        request.httpMethod = "POST"
+        request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         do {
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
                 let decodedOrder = try JSONDecoder().decode(Order.self, from: data)
             confirmationTitle = "Thank Ypu"
-                confirmationMessage = "Your order for \(decodedOrder.quantity)x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way!"
+            confirmationMessage = "Your order for \(decodedOrder.oneOrder.quantity)x \(Order.types[decodedOrder.oneOrder.type].lowercased()) cupcakes is on its way!"
                 showConfirmationMessage = true
         } catch {
             confirmationTitle = "Ooops, we have error"
